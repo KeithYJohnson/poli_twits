@@ -53,14 +53,6 @@ except FileNotFoundError:
     print('Couldnt find a doc2Vec model for {}, gonna train one for ya instead.'.format(all_tweets_d2v_file))
 
 if not model:
-        #     words, error = pvdm.train(tree_corpus, paragraphs_only = False)
-        # print("Epoch %d: error %.3f, alpha = %.5f" % (epoch, error, pvdm.alpha))
-        # if error < 5:
-        #     break
-        # if epoch > 0 and error > errors[-1]:
-        #     errors.append(error)
-        # else:
-        #     errors.append(error)
     sentences = LabeledLineSentence(sources)
     model = Doc2Vec(min_count=1, window=10, size=embedding_size, sample=1e-4, negative=5, workers=8)
     model.build_vocab(sentences.to_array())
