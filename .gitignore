@@ -1,0 +1,3 @@
+.python-version
+__pycache__
+data/word2vec_twitter_model
