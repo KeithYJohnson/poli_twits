@@ -35,6 +35,7 @@ class DataCleaner:
 
         #Remove stop wrds
         stops = set(stopwords.words("english"))
+        stops.add('rt')
         words = [w for w in words if not w in stops]
 
         return( " ".join( words ))
