@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import re
 import pandas as pd
+import csv
 from nltk.corpus import stopwords
 from os import path
 from spellcheckers import no_three_letters_in_row
@@ -21,12 +22,20 @@ class DataCleaner:
         no_ext  =  path.splitext(basename)[0]
         cleaned_data_filename = "cleanedtext_of_{}.csv".format(no_ext)
 
-        print('cleaned_data_filename: ', cleaned_data_filename)
         cleaned_data_file = open(
             path.dirname(__file__) + \
             '/../cleaned_data/{}'.format(cleaned_data_filename), 'w+'
         )
         self.cleaned_data.to_csv(cleaned_data_file)
+
+        with open(path.dirname(__file__) + '/../cleaned_data/cleanedwords_from_{}.csv'.format(no_ext), 'w+') as f:
+            csv_writer = csv.writer(f, quoting=csv.QUOTE_MINIMAL)
+            self.cleaned_data.map(
+                lambda sentence: csv_writer.writerows(
+                    #[[word]] to give writerows a sequence of one word instead of a sequence of len(word) characters
+                    [[word] for word in sentence.split()]
+                )
+            )
 
     def clean_words(self, words):
         text = BeautifulSoup(words, 'html5lib').get_text()
