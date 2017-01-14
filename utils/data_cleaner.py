@@ -3,6 +3,7 @@ import re
 import pandas as pd
 from nltk.corpus import stopwords
 from os import path
+from spellcheckers import no_three_letters_in_row
 
 class DataCleaner:
     def __init__(self, filename, column_to_clean, has_header=None, delimiter=",", header_names=[]):
