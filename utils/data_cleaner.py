@@ -41,9 +41,9 @@ class DataCleaner:
         #TODO - token actually becomes <url, it probably doenst matter as far as
         # building word vectors goes, but at some point make it return <URL>
 
-        #Remove stop wrds
         stops = set(stopwords.words("english"))
-        stops.add('rt')
-        words = [w for w in words if not w in stops]
+        stops.add('rt') # Add retween acronym to stopwords
+        #Remove stop words and reduced all instances of three consecutive characters to two consecutive characters.
+        words = [no_three_letters_in_row(w) for w in words if not w in stops]
 
         return( " ".join( words ))
