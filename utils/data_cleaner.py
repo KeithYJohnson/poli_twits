@@ -28,18 +28,17 @@ class DataCleaner:
         self.cleaned_data.to_csv(cleaned_data_file)
 
     def clean_words(self, words):
-        review_text = BeautifulSoup(words, 'html5lib').get_text()
         text = BeautifulSoup(words, 'html5lib').get_text()
         # Replace all URLs with <URL>
         text = re.sub(r'(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))',
                       '<URL>', text)
         # Remove non-letters
-        review_text = re.sub("[^a-zA-Z]", " ", review_text)
-        words = review_text.lower().split()
+        # TODO - what about hyphenated words?
         text = re.sub("(?!<URL>)([^a-zA-Z])", " ", text)
-        words = text.lower().split()
-        #TODO - token actually becomes <url, it probably doenst matter as far as
+
+        #TODO - <URL> token actually becomes <url, it probably doesnt matter as far as
         # building word vectors goes, but at some point make it return <URL>
+        words = text.lower().split()
 
         stops = set(stopwords.words("english"))
         stops.add('rt') # Add retween acronym to stopwords
