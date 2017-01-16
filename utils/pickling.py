@@ -1,4 +1,5 @@
 from hyperparams import *
+from six.moves import cPickle as pickle
 
 def create_pickle_filename():
     name = "numfeatures-{}--batch_size-{}--window_size-{}--numiters-{}--learning_rate-{}.pickle".format(num_features, batch_size, window_size, num_iterations, learning_rate)

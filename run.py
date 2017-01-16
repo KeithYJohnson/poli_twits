@@ -4,7 +4,6 @@ from scripts.initialize_vectors import initialize_vectors
 from utils.softmax import softmax
 from algos.skipgram import skipgram
 from run_batch import run_batch
-from six.moves import cPickle as pickle
 from utils.pickling import save_data
 import pandas as pd
 import random
