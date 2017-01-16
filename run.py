@@ -1,7 +1,12 @@
+from ipdb import set_trace as st
 from hyperparams import num_features, batch_size, window_size, num_noise
 from scripts.initialize_vectors import initialize_vectors
+from utils.softmax import softmax
+from algos.skipgram import skipgram
 import pandas as pd
+import random
 import numpy as np
+
 words_df = pd.read_csv(
     'cleaned_data/cleanedwords_from_all_tweets.csv',
     header=None,
@@ -10,18 +15,16 @@ words_df = pd.read_csv(
 )
 num_train = words_df.shape[0]
 
-embeddings     = initialize_vectors(words_df.shape[0], num_features)
+input_vectors     = initialize_vectors(words_df.shape[0], num_features)
 output_vectors = initialize_vectors(words_df.shape[0], num_features)
 
 cost = 0
-input_grad  = np.zeros(embeddings.shape)
+input_grad  = np.zeros(input_vectors.shape)
 output_grad = np.zeros(output_vectors.shape)
 
 for i in range(batch_size):
+    print('running batch: ', i)
     center_word_index  = random.randint(0, num_train - 1)
-
-    center_word        = words_df.iloc[center_word_index]
-    center_word_vector = embeddings[i]
 
     context_word_indices = list(range(center_word_index - window_size, center_word_index + window_size + 1))
     context_word_indices.remove(center_word_index)
@@ -30,28 +33,14 @@ for i in range(batch_size):
     batch_input_grad  = np.zeros(input_grad.shape)
     batch_output_grad = np.zeros(output_grad.shape)
 
-    for context_word_idx in context_word_indices:
-        probabilities = softmax(center_word_vector.dot(output_vectors.T))
-        context_word_loss = -np.log(probabilities)
+    [skipgram_loss,
+     skipgram_input_grad_loss,
+     skipgram_output_grad_loss
+    ] = skipgram(center_word_index, context_word_indices, batch_input_grad, batch_output_grad)
 
-        output_layer_error = probabilities
-        output_layer_error[context_word_idx] -= 1
-
-        num_predictions = output_layer_error.shape[0]
-
-        input_grad_at_context_word = np.dot(
-            output_layer_error.reshape(1, num_predictions),
-            output_vectors
-        ).flatten()
-
-        output_grad_at_context_word = np.multiply(
-            output_layer_error.reshape(num_predictions, 1),
-            center_word_vector.reshape(1, num_features)
-        )
-
-        batch_loss        += context_word_loss
-        batch_input_grad  += input_grad_at_context_word
-        batch_output_grad += output_grad_at_context_word
+    batch_loss        += skipgram_loss
+    batch_input_grad  += skipgram_input_grad_loss
+    batch_output_grad += skipgram_output_grad_loss
 
     cost        += batch_loss        / batch_size
     input_grad  += batch_input_grad  / batch_size
