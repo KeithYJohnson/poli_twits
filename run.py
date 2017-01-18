@@ -23,6 +23,9 @@ print('num_unique_words: ', num_unique_words)
 i = iter(unique_words)
 words_dict = dict(zip(i, np.arange(num_unique_words)))
 
+input_vectors  = initialize_vectors(num_unique_words, num_features)
+output_vectors = initialize_vectors(num_unique_words, num_features)
+
 cost = 0
 input_grad  = np.zeros(input_vectors.shape)
 output_grad = np.zeros(output_vectors.shape)
