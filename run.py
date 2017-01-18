@@ -16,8 +16,12 @@ words_df = pd.read_csv(
     names=['body']
 )
 
-input_vectors     = initialize_vectors(words_df.shape[0], num_features)
-output_vectors = initialize_vectors(words_df.shape[0], num_features)
+unique_words = words_df.body.unique()
+num_unique_words = len(unique_words)
+print('num_unique_words: ', num_unique_words)
+
+i = iter(unique_words)
+words_dict = dict(zip(i, np.arange(num_unique_words)))
 
 cost = 0
 input_grad  = np.zeros(input_vectors.shape)
