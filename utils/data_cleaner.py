@@ -56,3 +56,7 @@ class DataCleaner:
         words = [no_three_letters_in_row(w) for w in words if not w in stops]
 
         return( " ".join( words ))
+
+if __name__ == '__main__':
+    cleaner = DataCleaner('data/all_tweets.txt','body', header_names=['is_political', 'body'])
+    cleaner.clean()
