@@ -7,13 +7,6 @@ import pandas as pd
 import random
 import numpy as np
 
-# words_df = pd.read_csv(
-#     filename,
-#     header=None,
-#     index_col=False,
-#     names=['body']
-# )
-
 unique_words = words_df.body.unique()
 num_unique_words = len(unique_words)
 print('num_unique_words: ', num_unique_words)
