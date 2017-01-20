@@ -12,8 +12,8 @@ tweets_df = pd.read_csv(
 )
 
 def run_batch(input_vectors, output_vectors):
-    # Need center and context word indices for the algorithms
     sentence_index            = random.randint(0, len(tweets_df) - 1)
+    sentence_words            = tweets_df.body[sentence_index].split()
     sentence_words_wv_indices = [words_dict[word] for word in sentence_words if word in words_dict]
 
     if len(sentence_words_wv_indices) > 2 * window_size + 1:
@@ -24,6 +24,7 @@ def run_batch(input_vectors, output_vectors):
         center_word_index = math.ceil(len(sentence_words_wv_indices) / 2)
         context_word_indices = list(range(0, len(sentence_words_wv_indices)))
         context_word_indices.remove(center_word_index)
+
 
     [skipgram_loss,
      skipgram_input_grad_loss,
