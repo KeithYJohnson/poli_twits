@@ -1,6 +1,8 @@
 import random
 import numpy as np
-from hyperparams import num_train, window_size
+import pandas as pd
+import math
+from hyperparams import num_train, window_size, words_dict
 from algos.skipgram import skipgram
 
 tweets_df = pd.read_csv(
@@ -11,10 +13,17 @@ tweets_df = pd.read_csv(
 
 def run_batch(input_vectors, output_vectors):
     # Need center and context word indices for the algorithms
-    center_word_index  = random.randint(0, input_vectors.shape[0] - 1)
+    sentence_index            = random.randint(0, len(tweets_df) - 1)
+    sentence_words_wv_indices = [words_dict[word] for word in sentence_words if word in words_dict]
 
-    context_word_indices = list(range(center_word_index - window_size, center_word_index + window_size + 1))
-    context_word_indices.remove(center_word_index)
+    if len(sentence_words_wv_indices) > 2 * window_size + 1:
+        center_word_index = random.randint(window_size, len(sentence_words_wv_indices) - window_size)
+        context_word_indices = list(range(center_word_index - window_size, center_word_index + window_size + 1))
+        context_word_indices.remove(center_word_index)
+    else:
+        center_word_index = math.ceil(len(sentence_words_wv_indices) / 2)
+        context_word_indices = list(range(0, len(sentence_words_wv_indices)))
+        context_word_indices.remove(center_word_index)
 
     [skipgram_loss,
      skipgram_input_grad_loss,
