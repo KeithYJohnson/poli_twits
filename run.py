@@ -11,44 +11,41 @@ unique_words = words_df.body.unique()
 num_unique_words = len(unique_words)
 print('num_unique_words: ', num_unique_words)
 
-input_vectors  = initialize_vectors(num_unique_words, num_features)
-output_vectors = initialize_vectors(num_unique_words, num_features)
+word_vectors = initialize_vectors(2 * num_unique_words, num_features)
 
 cost = 0
-input_grad  = np.zeros(input_vectors.shape)
-output_grad = np.zeros(output_vectors.shape)
+grad = np.zeros(word_vectors.shape)
+
+def batch_wrapper(word_vectors, batch_size):
+    batch_loss = 0
+    batch_grad = np.zeros(word_vectors.shape)
+    for i in range(batch_size):
+        if i % 50 == 0:
+            print('running batch: ', i)
+
+        [batch_iter_loss,
+         batch_iter_grad,
+        ] = run_batch(word_vectors)
+
+        batch_loss += batch_iter_loss
+        batch_grad += batch_iter_grad
+
+    batch_loss  /= batch_size
+    batch_grad  /= batch_size
+
+    return batch_loss, batch_grad
+
 
 for j in range(num_iterations):
     print('iteration number: ', j)
-    for i in range(batch_size):
-        if i % 15 == 0:
-            print('running batch: ', i)
-        batch_loss        = 0
-        batch_input_grad  = np.zeros(input_grad.shape)
-        batch_output_grad = np.zeros(input_grad.shape)
 
-        [batch_iter_loss,
-         batch_iter_input_grad,
-         batch_iter_output_grad
-        ] = run_batch(input_vectors, output_vectors)
-
-        batch_loss        += batch_iter_loss
-        batch_input_grad  += batch_iter_input_grad
-        batch_output_grad += batch_iter_output_grad
-
-
-    batch_loss        /= batch_size
-    batch_input_grad  /= batch_size
-    batch_output_grad /= batch_size
-
+    batch_loss, batch_grad = batch_wrapper(word_vectors, batch_size)
     print('batch_loss: ', batch_loss)
 
-    cost           += batch_loss
-    input_vectors  -= batch_input_grad  * learning_rate
-    output_vectors -= batch_output_grad * learning_rate
+    cost += batch_loss
+    grad -= batch_grad
 
 save_data(input_vectors, output_vectors)
 
 print('final cost: ', cost)
-print('final input grad: ', input_grad)
-print('final output grad: ', output_grad)
+print('final grad: ', grad)

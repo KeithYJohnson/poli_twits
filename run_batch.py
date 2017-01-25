@@ -4,6 +4,7 @@ import pandas as pd
 import math
 from hyperparams import num_train, window_size, words_dict
 from algos.skipgram import skipgram
+from ipdb import set_trace as st
 
 tweets_df = pd.read_csv(
     'cleaned_data/cleanedtext_of_all_tweets.csv',
@@ -11,7 +12,7 @@ tweets_df = pd.read_csv(
     names=['body']
 )
 
-def run_batch(input_vectors, output_vectors):
+def run_batch(word_vectors):
     sentence_index            = random.randint(0, len(tweets_df) - 1)
     sentence_words            = tweets_df.body[sentence_index].split()
     sentence_words_wv_indices = [words_dict[word] for word in sentence_words if word in words_dict]
@@ -25,10 +26,8 @@ def run_batch(input_vectors, output_vectors):
         context_word_indices = list(range(0, len(sentence_words_wv_indices)))
         context_word_indices.remove(center_word_index)
 
-
     [skipgram_loss,
-     skipgram_input_grad_loss,
-     skipgram_output_grad_loss
-    ] = skipgram(center_word_index, context_word_indices, input_vectors, output_vectors)
+     skipgram_grad
+    ] = skipgram(center_word_index, context_word_indices, word_vectors)
 
-    return skipgram_loss, skipgram_input_grad_loss, skipgram_output_grad_loss
+    return skipgram_loss, skipgram_grad
