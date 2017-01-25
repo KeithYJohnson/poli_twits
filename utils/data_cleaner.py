@@ -6,6 +6,8 @@ from nltk.corpus import stopwords
 from os import path
 from spellcheckers import no_three_letters_in_row
 
+MINIMUM_TWEET_WORD_LENGTH = 5
+
 class DataCleaner:
     def __init__(self, filename, column_to_clean, has_header=None, delimiter=",", header_names=[]):
         self.filename = filename
@@ -15,6 +17,7 @@ class DataCleaner:
 
     def clean(self):
         self.cleaned_data = self.df[self.column_to_clean].map(lambda x: self.clean_words(x))
+        self.cleaned_data = self.cleaned_data.dropna()
         self.save_data()
 
     def save_data(self):
@@ -54,8 +57,8 @@ class DataCleaner:
         stops.add('rt') # Add retween acronym to stopwords
         #Remove stop words and reduced all instances of three consecutive characters to two consecutive characters.
         words = [no_three_letters_in_row(w) for w in words if not w in stops]
-
-        return( " ".join( words ))
+        if len(words) > MINIMUM_TWEET_WORD_LENGTH:
+            return( " ".join( words ))
 
 if __name__ == '__main__':
     cleaner = DataCleaner('data/all_tweets.txt','body', header_names=['is_political', 'body'])
