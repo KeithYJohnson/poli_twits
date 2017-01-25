@@ -18,6 +18,7 @@ class DataCleaner:
     def clean(self):
         self.cleaned_data = self.df[self.column_to_clean].map(lambda x: self.clean_words(x))
         self.cleaned_data = self.cleaned_data.dropna()
+        self.cleaned_data = self.cleaned_data.reset_index(drop=True)
         self.save_data()
 
     def save_data(self):
