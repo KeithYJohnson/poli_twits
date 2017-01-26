@@ -5,14 +5,12 @@ def create_pickle_filename():
     name = "numfeatures-{}--batch_size-{}--window_size-{}--numiters-{}--learning_rate-{}.pickle".format(num_features, batch_size, window_size, num_iterations, learning_rate)
     return name
 
-def save_data(input_vectors, output_vectors):
+def save_data(word_vectors):
     pickle_file = create_pickle_filename()
     try:
       f = open(pickle_file, 'wb')
       save = {
-        'input_vectors':  input_vectors,
-        'output_vectors': output_vectors,
-        'word_vectors':   (input_vectors + output_vectors) / 2
+        'word_vectors': word_vectors
         }
       pickle.dump(save, f, pickle.HIGHEST_PROTOCOL)
       f.close()
