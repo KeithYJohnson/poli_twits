@@ -7,6 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from utils.softmax import softmax
 from utils.sigmoid import sigmoid
+from ipdb import set_trace as st
 
 def softmax_cost(center_word_vector, context_word_idx, output_vectors, center_word_index=None):
     num_features = output_vectors.shape[1]
@@ -95,7 +96,7 @@ if __name__ == '__main__':
         numgrad[ix] = numgrad_at_ix
         reldiff = abs(numgrad_at_ix - analytical_grad[ix]) / max(1, abs(numgrad_at_ix), abs(analytical_grad[ix]))
 
-        if reldiff > 1e-42:
+        if reldiff > 1e-4:
             print("Gradient check failed.  Reldiff: ", reldiff)
             print("First gradient error found at index %s" % str(ix))
             print("Analytical gradient {} \t Numerical gradient: {}".format(analytical_grad[ix], numgrad[ix]))
