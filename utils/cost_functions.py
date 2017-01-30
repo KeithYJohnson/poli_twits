@@ -31,18 +31,18 @@ def softmax_cost(center_word_vector, context_word_idx, output_vectors, center_wo
 
     return context_word_loss, input_grad_at_context_word, output_grad_at_context_word
 
-def negative_sampling_cost(center_word_vector, center_word_index, output_vectors, ctx_indices=None, hparams={}):
+def negative_sampling_cost(center_word_vector, context_word_idx, output_vectors, ctx_indices=None, hparams={}):
     noise_gen = hparams.get('noise_gen')
     num_noise = hparams.get('num_noise')
 
     output_grad_at_context_word = np.zeros(output_vectors.shape)
     input_grad_at_context_word  = np.zeros(center_word_vector.shape)
-
-    indices = [center_word_index]
+    
+    indices = [context_word_idx]
     if not ctx_indices:
         for k in range(num_noise):
             newidx, _ = noise_gen.sample()
-            while newidx == center_word_index:
+            while newidx == context_word_idx:
                 newidx, _ = noise_gen.sample()
             indices += [newidx]
     else:
@@ -64,7 +64,7 @@ def negative_sampling_cost(center_word_vector, center_word_index, output_vectors
     return context_word_loss, input_grad_at_context_word, output_grad_at_context_word
 
 if __name__ == '__main__':
-    # cost_fn(center_word_vector, context_word_idx, output_vectors, center_word_index=center_word_index)
+    # cost_fn(center_word_vector, context_word_idx, output_vectors, context_word_idx=center_word_index)
     import random
     rndstate = random.getstate()
     num_features = 10

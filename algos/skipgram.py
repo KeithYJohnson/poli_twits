@@ -14,7 +14,7 @@ def skipgram(center_word_index, context_word_indices, word_vectors, cost_fn=nega
         [context_word_loss,
          input_grad_at_context_word,
          output_grad_at_context_word
-        ] = cost_fn(center_word_vector, center_word_index, output_vectors, hparams=hparams)
+        ] = cost_fn(center_word_vector, context_word_idx, output_vectors, hparams=hparams)
 
         loss                             += context_word_loss
         input_grad[center_word_index, :] += input_grad_at_context_word
