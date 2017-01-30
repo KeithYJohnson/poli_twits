@@ -7,6 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from utils.softmax import softmax
 from utils.sigmoid import sigmoid
+from utils.normalize_rows import normalize_rows
 from ipdb import set_trace as st
 
 def softmax_cost(center_word_vector, context_word_idx, output_vectors, center_word_index=None):
@@ -37,7 +38,7 @@ def negative_sampling_cost(center_word_vector, context_word_idx, output_vectors,
 
     output_grad_at_context_word = np.zeros(output_vectors.shape)
     input_grad_at_context_word  = np.zeros(center_word_vector.shape)
-    
+
     indices = [context_word_idx]
     if not ctx_indices:
         for k in range(num_noise):
@@ -64,13 +65,13 @@ def negative_sampling_cost(center_word_vector, context_word_idx, output_vectors,
     return context_word_loss, input_grad_at_context_word, output_grad_at_context_word
 
 if __name__ == '__main__':
-    # cost_fn(center_word_vector, context_word_idx, output_vectors, context_word_idx=center_word_index)
     import random
     rndstate = random.getstate()
     num_features = 10
     num_train    = 11
-    cw_vec       = np.random.randn(1, num_features)
-    output_vecs  = np.random.randn(num_train, num_features)
+    cw_vec       = normalize_rows(np.random.randn(1, num_features))
+    output_vecs  = normalize_rows(np.random.randn(num_train, num_features))
+    # Stacking just so an np.nditer(stacked) iterates through all the parameters.
     stacked      = np.vstack([cw_vec, output_vecs])
     hparams      = { 'num_noise': 2 }
     ctx_indices  = [1, 3]
