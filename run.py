@@ -32,15 +32,16 @@ hparams = {
     'num_noise':   num_noise,
     'batch_size':  batch_size,
     'window_size': window_size,
-    'num_train':   num_train
+    'num_train':   num_train,
+    'batch_size':  batch_size
 }
 
 cost = 0
 grad = np.zeros(word_vectors.shape)
-def batch_wrapper(word_vectors, batch_size, hparams={}):
+def batch_wrapper(word_vectors, hparams={}):
     batch_loss = 0
     batch_grad = np.zeros(word_vectors.shape)
-    for i in range(batch_size):
+    for i in range(hparams['batch_size']):
         if i % 50 == 0:
             print('running batch: ', i)
 
@@ -59,7 +60,7 @@ def batch_wrapper(word_vectors, batch_size, hparams={}):
 
 for j in range(num_iterations):
     print('iteration number: ', j)
-    batch_loss, batch_grad = batch_wrapper(word_vectors, batch_size, hparams=hparams)
+    batch_loss, batch_grad = batch_wrapper(word_vectors, hparams=hparams)
     print('batch_loss: ', batch_loss)
 
     cost += batch_loss
